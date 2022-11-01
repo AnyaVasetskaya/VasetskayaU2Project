@@ -23,6 +23,8 @@ public class LinearEquation {
         return roundedToHundredth(Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)));
     }
 
+
+
     public double yIntercept() { return roundedToHundredth(y1 - x1 * slope()); }
 
 
@@ -32,12 +34,13 @@ public class LinearEquation {
 
 
     /*All the extra methods below (before the equation() method) are essentially just methods
-    that help the legibility of the equation() method and make it much shorter and easier to understand when
-    it's split up into separate methods like this, instead of just being one atrociously long collection of if-else statements.*/
+      that help the legibility of the equation() method and make it much shorter and easier to understand when
+      it's split up into separate methods like this, instead of just being one confusing, long collection of if-else statements.*/
     private boolean isSlopeInt() {
         return ((slope()) * 10) % 10 == 0;
     }
 
+    /*Creates the first part of an equation with a whole number slope*/
     private String intSlopeEqPrefix() {
         return slope() == 1 ? "y = x"
                 : slope() == -1 ? "y = -x"
@@ -45,6 +48,8 @@ public class LinearEquation {
                 : "y = " + (int) (slope()) + "x";
     }
 
+    /*Creates the second part of an equation
+      with a whole number slope based on the y-intercept.*/
     private String intSlopeEqSuffix() {
         double yInt = yIntercept();
         double yIntAbs = Math.abs(yInt);
@@ -56,32 +61,40 @@ public class LinearEquation {
             return " -" + (slope() == 0 ? (int) yIntAbs : " " + yIntAbs);
 
     }
+
+    //Adds the two parts together to create an equation (with an integer slope)
     private String intSlopeEquation() {
         return intSlopeEqPrefix() + intSlopeEqSuffix();
     }
 
+    //Checks if both the numerator and denominator of a fractional slope are negative
+    /*This is used in the method after this one, that eliminates double negatives
+      in case of a fractional slope (e.g. -5/-4 becomes 5/4)*/
     private boolean isNumDenomNeg() {
         return  (y2 - y1) < 0 && (x2 - x1) < 0;
     }
 
+    /*Creates the first part of an equation with a fractional slope*/
     private String nonIntSlopeEqPrefix() {
         if (isNumDenomNeg()) return "y = (" + Math.abs(y2 - y1) + "/" + Math.abs(x2 - x1) + ")x";
         else if ((x2 - x1) < 0) return "y = (-" + (y2 - y1) + "/" + Math.abs(x2 - x1) + ")x";
         else return "y = (" + (y2 - y1) + "/" + (x2 - x1) + ")x";
     }
 
+    /*Creates the second part of an equation
+      with a fractional slope based on the y-intercept.*/
     private String nonIntSlopeEqSuffix() {
         if (yIntercept() == 0) return "";
         else if (yIntercept() > 0) return " + " + yIntercept();
         else return " - " + Math.abs(yIntercept());
     }
+
+    //Adds the two parts together to create an equation (with a fractional slope)
     private String nonIntSlopeEquation() {
         return nonIntSlopeEqPrefix() + nonIntSlopeEqSuffix();
     }
 
-    /*This next class has a lot of if-else statements,
-    in order to return the different types of equations
-    for every possible situation (slope of 0, y-int of 0, negative fractional slope, etc.)*/
+    //Uses the previous 8 methods to concisely create an equation for every possible situation of pairs of coordinates
     public String equation() {
         return isSlopeInt() ? intSlopeEquation() : nonIntSlopeEquation();
     }
